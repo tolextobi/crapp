@@ -32,3 +32,17 @@ async def ping():
         )
 
     return {"status": "ok", "timestamp": last_ping.isoformat()}
+
+@app.get("/status")
+def status():
+    if last_ping is None:
+        return {"last_ping": None, "minutes_since_ping": None}
+
+    now = datetime.now(timezone.utc)
+    minutes_since = (now - last_ping).total_seconds() / 60
+
+    return {
+        "last_ping": last_ping.isoformat(),
+        "minutes_since_ping": round(minutes_since, 1),
+        "alert_threshold_minutes": ALERT_MINUTES,
+    }
