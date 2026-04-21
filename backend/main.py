@@ -29,7 +29,7 @@ async def check_alert():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(check_alert, "interval", minutes=1)
+    scheduler.add_job(check_alert, "interval", minutes=5)
     scheduler.start()
     yield
     scheduler.shutdown()
