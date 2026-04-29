@@ -60,7 +60,7 @@ struct ContentView: View {
     }
 
     func sendPing() {
-        guard let url = URL(string: "http://192.168.0.35:8000/ping") else { return }
+        guard let url = URL(string: "https://crapp.at/ping") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         URLSession.shared.dataTask(with: request) { _, _, _ in
@@ -69,7 +69,7 @@ struct ContentView: View {
     }
 
     func fetchStatus() {
-        guard let url = URL(string: "http://192.168.0.35:8000/status") else { return }
+        guard let url = URL(string: "https://crapp.at/status") else { return }
         URLSession.shared.dataTask(with: url) { data, _, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
