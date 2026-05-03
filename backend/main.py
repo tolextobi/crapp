@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 import os, httpx
 from datetime import datetime, timezone
@@ -36,11 +38,17 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 last_ping = None
 
 @app.get("/")
 def root():
-    return {"status": "CRApp Backend läuft ✅"}
+    return FileResponse("static/index.html")
+
+@app.get("/app")
+def serve_app():
+    return FileResponse("static/index.html")
 
 @app.post("/ping")
 async def ping():

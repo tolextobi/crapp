@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRApp</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f2f2f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 { font-size: 34px; font-weight: 700; margin-bottom: 4px; }
+        .subtitle { color: #8e8e93; font-size: 15px; margin-bottom: 40px; }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .card-label { color: #8e8e93; font-size: 13px; margin-bottom: 6px; }
+        .countdown {
+            font-size: 48px;
+            font-weight: 600;
+            color: #34c759;
+        }
+        .countdown.urgent { color: #ff3b30; }
+        button {
+            width: 100%;
+            padding: 18px;
+            background: #ff2d55;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        button:active { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CRApp</h1>
+        <p class="subtitle">Check-in System</p>
+
+        <div class="card">
+            <p class="card-label">Nächster Check-in in</p>
+            <p class="countdown" id="countdown">--</p>
+            <p class="card-label">Minuten</p>
+        </div>
+
+        <button onclick="sendPing()">♥ Alles gut</button>
+    </div>
+
+    <script>
+        async function sendPing() {
+            await fetch('/ping', { method: 'POST' });
+            fetchStatus();
+        }
+
+        async function fetchStatus() {
+            const res = await fetch('/status');
+            const data = await res.json();
+            if (data.minutes_since_ping !== null) {
+                const left = Math.max(0, data.alert_threshold_minutes - data.minutes_since_ping);
+                const el = document.getElementById('countdown');
+                el.textContent = Math.floor(left);
+                el.className = 'countdown' + (left < 10 ? ' urgent' : '');
+            }
+        }
+
+        fetchStatus();
+        setInterval(fetchStatus, 30000);
+    </script>
+</body>
+</html>

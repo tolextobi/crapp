@@ -3,3 +3,9 @@ uvicorn
 httpx
 python-dotenv
 apscheduler
+fastapi
+uvicorn
+httpx
+python-dotenv
+apscheduler
+aiofiles
